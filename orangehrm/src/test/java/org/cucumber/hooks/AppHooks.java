@@ -4,6 +4,8 @@ import java.time.Duration;
 
 import org.cucumber.drivers.DriverFactory;
 import org.cucumber.helpers.CommonUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
 import io.cucumber.java.After;
@@ -12,6 +14,7 @@ import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
 import io.cucumber.java.BeforeStep;
 //import io.cucumber.java.BeforeAll;
+import io.cucumber.java.Scenario;
 
 public class AppHooks {
 	
@@ -44,8 +47,16 @@ public class AppHooks {
 	}
 	
 	@After
-	public void afterScenario() {
+	public void afterScenario(Scenario scenario) {
 		System.out.println("AFTER SCENARIO...");
+		System.out.println("Taking screenshot");
+		if(scenario.isFailed()) {
+			byte[] screenshot = 	((TakesScreenshot)driver).getScreenshotAs(OutputType.BYTES);
+			scenario.attach(screenshot, "imabge/png", scenario.getName());
+		}
+		byte[] screenshot = 	((TakesScreenshot)driver).getScreenshotAs(OutputType.BYTES);
+		scenario.attach(screenshot, "image/png","Jsa"+scenario.getName());
+		
 		driver.quit();
 	}
 	
